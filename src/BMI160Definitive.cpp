@@ -67,6 +67,19 @@ AccelPowerModes BMI160Definitive::getAccelPowerMode() {
     }
 }
 
+GyroPowerModes BMI160Definitive::getGyroPowerMode() {
+    uint8_t pmuStatus = this->readRegister(0x03);
+    uint8_t accelPowerMode = pmuStatus >> 2 & 0x03;
+
+    if(accelPowerMode == INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
+        return GYRO_SUSPEND_POWER_MODE;
+    } else if(accelPowerMode == INTERNAL_GYRO_NORMAL_POWER_MODE) {
+        return GYRO_NORMAL_POWER_MODE;
+    } else if(accelPowerMode == INTERNAL_GYRO_FAST_STARTUP_POWER_MODE) {
+        return GYRO_FAST_STARTUP_POWER_MODE;
+    }
+}
+
 void BMI160Definitive::setAccelPowerMode(AccelPowerModes powerMode) {
     switch(powerMode) {
         case ACCEL_NORMAL_POWER_MODE:
@@ -85,6 +98,30 @@ void BMI160Definitive::setAccelPowerMode(AccelPowerModes powerMode) {
 
     vTaskDelay(pdMS_TO_TICKS(10));
     AccelPowerModes currentPowerMode = this->getAccelPowerMode();
+
+    while(currentPowerMode != powerMode) {
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
+void BMI160Definitive::setGyroPowerMode(GyroPowerModes powerMode) {
+    switch(powerMode) {
+        case GYRO_NORMAL_POWER_MODE:
+            this->writeRegister(0x7E, INTERNAL_GYRO_NORMAL_POWER_MODE);
+            break;
+        case GYRO_SUSPEND_POWER_MODE:
+            this->writeRegister(0x7E, INTERNAL_GYRO_SUSPEND_POWER_MODE);
+            break;
+        case GYRO_FAST_STARTUP_POWER_MODE:
+            this->writeRegister(0x7E, INTERNAL_GYRO_FAST_STARTUP_POWER_MODE);
+            break;
+        default:
+            this->writeRegister(0x7E, INTERNAL_GYRO_NORMAL_POWER_MODE);
+            break;
+    };
+
+    vTaskDelay(pdMS_TO_TICKS(10));
+    GyroPowerModes currentPowerMode = this->getGyroPowerMode();
 
     while(currentPowerMode != powerMode) {
         vTaskDelay(pdMS_TO_TICKS(10));

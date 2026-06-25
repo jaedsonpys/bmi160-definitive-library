@@ -30,7 +30,6 @@ enum AccelPowerModes {
 enum GyroPowerModes {
     GYRO_NORMAL_POWER_MODE,
     GYRO_SUSPEND_POWER_MODE,
-    GYRO_LOW_POWER_MODE,
     GYRO_FAST_STARTUP_POWER_MODE
 };
 
