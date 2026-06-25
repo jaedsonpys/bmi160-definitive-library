@@ -40,7 +40,7 @@ class BMI160Definitive {
         short sensorSelectPin;
     
     public:
-        void begin(SPIClass *spiInstance, short sensorCS);
+        bool begin(SPIClass *spiInstance, short sensorCS);
         
         AccelPowerModes getAccelPowerMode();
         GyroPowerModes getGyroPowerMode();
