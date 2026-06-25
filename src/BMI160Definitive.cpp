@@ -36,7 +36,7 @@ uint8_t BMI160Definitive::readRegister(uint8_t reg) {
 void BMI160Definitive::writeRegister(uint8_t reg, uint8_t value) {
     digitalWrite(this->sensorSelectPin, LOW);
 
-    this->spiInstance->transfer(reg | 0x7F);
+    this->spiInstance->transfer(reg & 0x7F);
     this->spiInstance->transfer(value);
 
     digitalWrite(this->sensorSelectPin, HIGH);
