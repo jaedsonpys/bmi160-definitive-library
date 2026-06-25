@@ -61,26 +61,34 @@ AccelPowerModes BMI160Definitive::getAccelPowerMode() {
     uint8_t pmuStatus = this->readRegister(0x03);
     uint8_t accelPowerMode = pmuStatus >> 4 & 0x03;
 
+    AccelPowerModes definedPMU;
+
     if(accelPowerMode == INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
-        return ACCEL_SUSPEND_POWER_MODE;
+        definedPMU = ACCEL_SUSPEND_POWER_MODE;
     } else if(accelPowerMode == INTERNAL_ACCEL_LOW_POWER_MODE) {
-        return ACCEL_LOW_POWER_MODE;
+        definedPMU = ACCEL_LOW_POWER_MODE;
     } else if(accelPowerMode == INTERNAL_ACCEL_NORMAL_POWER_MODE) {
-        return ACCEL_NORMAL_POWER_MODE;
+        definedPMU = ACCEL_NORMAL_POWER_MODE;
     }
+
+    return definedPMU;
 }
 
 GyroPowerModes BMI160Definitive::getGyroPowerMode() {
     uint8_t pmuStatus = this->readRegister(0x03);
     uint8_t accelPowerMode = pmuStatus >> 2 & 0x03;
 
+    GyroPowerModes definedPMU;
+
     if(accelPowerMode == INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
-        return GYRO_SUSPEND_POWER_MODE;
+        definedPMU = GYRO_SUSPEND_POWER_MODE;
     } else if(accelPowerMode == INTERNAL_GYRO_NORMAL_POWER_MODE) {
-        return GYRO_NORMAL_POWER_MODE;
+        definedPMU = GYRO_NORMAL_POWER_MODE;
     } else if(accelPowerMode == INTERNAL_GYRO_FAST_STARTUP_POWER_MODE) {
-        return GYRO_FAST_STARTUP_POWER_MODE;
+        definedPMU = GYRO_FAST_STARTUP_POWER_MODE;
     }
+
+    return definedPMU;
 }
 
 void BMI160Definitive::setAccelPowerMode(AccelPowerModes powerMode) {
