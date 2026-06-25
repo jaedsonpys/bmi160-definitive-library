@@ -67,7 +67,7 @@ AccelPowerModes BMI160Definitive::getAccelPowerMode() {
     }
 }
 
-bool BMI160Definitive::setAccelPowerMode(AccelPowerModes powerMode) {
+void BMI160Definitive::setAccelPowerMode(AccelPowerModes powerMode) {
     switch(powerMode) {
         case ACCEL_NORMAL_POWER_MODE:
             this->writeRegister(0x7E, INTERNAL_ACCEL_NORMAL_POWER_MODE);
