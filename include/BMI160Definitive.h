@@ -38,12 +38,12 @@ class BMI160Definitive {
     private:
         SPIClass *spiInstance;
         short sensorSelectPin;
-
-        AccelPowerModes getAccelPowerMode();
-        GyroPowerModes getGyroPowerMode();
-
+    
     public:
         void begin(SPIClass *spiInstance, short sensorCS);
+        
+        AccelPowerModes getAccelPowerMode();
+        GyroPowerModes getGyroPowerMode();
 
         void setAccelPowerMode(AccelPowerModes powerMode);
         void setGyroPowerMode(GyroPowerModes powerMode);
