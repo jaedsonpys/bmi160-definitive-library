@@ -9,13 +9,13 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short sensorCS) {
     this->spiInstance = spiInstance;
     this->sensorSelectPin = sensorCS;
 
+    pinMode(this->sensorSelectPin, OUTPUT);
     this->spiInstance->beginTransaction(BMI160SPISettings);
 
-    pinMode(this->sensorSelectPin, OUTPUT);
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(0x7F);
-    vTaskDelay(10);
+    vTaskDelay(pdMS_TO_TICKS(10));
     this->spiInstance->transfer(0x00);
 
     digitalWrite(this->sensorSelectPin, HIGH);
