@@ -138,3 +138,17 @@ void BMI160Definitive::setGyroPowerMode(GyroPowerModes powerMode) {
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
+
+AccelerometerData BMI160Definitive::getAccelerometerData() {
+    uint8_t xAxisRaw = this->readRegister(0x13);
+    uint8_t yAxisRaw = this->readRegister(0x15);
+    uint8_t zAxisRaw = this->readRegister(0x17);
+
+    AccelerometerData gData;
+
+    gData.x = (float)xAxisRaw / 16384.0f;
+    gData.y = (float)yAxisRaw / 16384.0f;
+    gData.z = (float)zAxisRaw / 16384.0f;
+
+    return gData;
+}
