@@ -15,7 +15,6 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short sensorCS) {
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(0x7F);
-    vTaskDelay(pdMS_TO_TICKS(10));
     this->spiInstance->transfer(0x00);
 
     digitalWrite(this->sensorSelectPin, HIGH);
@@ -63,11 +62,11 @@ AccelPowerModes BMI160Definitive::getAccelPowerMode() {
 
     AccelPowerModes definedPMU;
 
-    if(accelPowerMode == INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
+    if(accelPowerMode == (uint8_t)INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
         definedPMU = ACCEL_SUSPEND_POWER_MODE;
-    } else if(accelPowerMode == INTERNAL_ACCEL_LOW_POWER_MODE) {
+    } else if(accelPowerMode == (uint8_t)INTERNAL_ACCEL_LOW_POWER_MODE) {
         definedPMU = ACCEL_LOW_POWER_MODE;
-    } else if(accelPowerMode == INTERNAL_ACCEL_NORMAL_POWER_MODE) {
+    } else if(accelPowerMode == (uint8_t)INTERNAL_ACCEL_NORMAL_POWER_MODE) {
         definedPMU = ACCEL_NORMAL_POWER_MODE;
     }
 
@@ -80,11 +79,11 @@ GyroPowerModes BMI160Definitive::getGyroPowerMode() {
 
     GyroPowerModes definedPMU;
 
-    if(accelPowerMode == INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
+    if(accelPowerMode == (uint8_t)INTERNAL_ACCEL_SUSPEND_POWER_MODE) {
         definedPMU = GYRO_SUSPEND_POWER_MODE;
-    } else if(accelPowerMode == INTERNAL_GYRO_NORMAL_POWER_MODE) {
+    } else if(accelPowerMode == (uint8_t)INTERNAL_GYRO_NORMAL_POWER_MODE) {
         definedPMU = GYRO_NORMAL_POWER_MODE;
-    } else if(accelPowerMode == INTERNAL_GYRO_FAST_STARTUP_POWER_MODE) {
+    } else if(accelPowerMode == (uint8_t)INTERNAL_GYRO_FAST_STARTUP_POWER_MODE) {
         definedPMU = GYRO_FAST_STARTUP_POWER_MODE;
     }
 
