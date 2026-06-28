@@ -10,7 +10,9 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short sensorCS) {
     this->sensorSelectPin = sensorCS;
 
     pinMode(this->sensorSelectPin, OUTPUT);
-    this->spiInstance->beginTransaction(BMI160SPISettings);
+    digitalWrite(this->sensorSelectPin, HIGH);
+
+    vTaskDelay(pdMS_TO_TICKS(10));
 
     this->readRegister(0x7F);
     vTaskDelay(pdMS_TO_TICKS(10));
@@ -21,36 +23,43 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short sensorCS) {
 }
 
 void BMI160Definitive::softReset() {
+    this->spiInstance->beginTransaction(BMI160SPISettings);
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(0xB6);
     this->spiInstance->transfer(0x00);
-
+    
     digitalWrite(this->sensorSelectPin, HIGH);
+    this->spiInstance->endTransaction();
     vTaskDelay(pdMS_TO_TICKS(100));
 }
 
 uint8_t BMI160Definitive::readRegister(uint8_t reg) {
+    this->spiInstance->beginTransaction(BMI160SPISettings);
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(reg | 0x80);
     uint8_t regReaded = this->spiInstance->transfer(0x00);
     
     digitalWrite(this->sensorSelectPin, HIGH);
+    this->spiInstance->endTransaction();
 
     return regReaded;
 }
 
 void BMI160Definitive::writeRegister(uint8_t reg, uint8_t value) {
+    this->spiInstance->beginTransaction(BMI160SPISettings);
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(reg & 0x7F);
     this->spiInstance->transfer(value);
-
+    
     digitalWrite(this->sensorSelectPin, HIGH);
+    this->spiInstance->endTransaction();
 }
 
 void BMI160Definitive::readRegisters(uint8_t reg, uint8_t *buffer, uint8_t len) {
+    this->spiInstance->beginTransaction(BMI160SPISettings);
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(reg | 0x80);
@@ -60,6 +69,7 @@ void BMI160Definitive::readRegisters(uint8_t reg, uint8_t *buffer, uint8_t len) 
     }
 
     digitalWrite(this->sensorSelectPin, HIGH);
+    this->spiInstance->endTransaction();
 }
 
 AccelPowerModes BMI160Definitive::getAccelPowerMode() {
