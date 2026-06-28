@@ -13,6 +13,11 @@
 #define INTERNAL_GYRO_SUSPEND_POWER_MODE 0x14
 #define INTERNAL_GYRO_FAST_STARTUP_POWER_MODE 0x17
 
+#define PMU_STATUS_SUSPEND 0x00
+#define PMU_STATUS_NORMAL 0x01
+#define PMU_STATUS_LOW_POWER 0x10
+#define PMU_STATUS_FAST_STARTUP 0x11
+
 struct AccelerometerData {
     int x, y, z;
 };
