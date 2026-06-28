@@ -24,6 +24,16 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short sensorCS) {
     return chipID == 0xD1;
 }
 
+void BMI160Definitive::softReset() {
+    digitalWrite(this->sensorSelectPin, LOW);
+
+    this->spiInstance->transfer(0xB6);
+    this->spiInstance->transfer(0x00);
+
+    digitalWrite(this->sensorSelectPin, HIGH);
+    vTaskDelay(pdMS_TO_TICKS(100));
+}
+
 uint8_t BMI160Definitive::readRegister(uint8_t reg) {
     digitalWrite(this->sensorSelectPin, LOW);
 

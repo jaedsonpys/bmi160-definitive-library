@@ -41,6 +41,7 @@ class BMI160Definitive {
     
     public:
         bool begin(SPIClass *spiInstance, short sensorCS);
+        void softReset();
         
         AccelPowerModes getAccelPowerMode();
         GyroPowerModes getGyroPowerMode();
