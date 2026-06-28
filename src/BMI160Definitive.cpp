@@ -5,13 +5,15 @@
 
 SPISettings BMI160SPISettings(10000000, MSBFIRST, SPI_MODE0);
 
-bool BMI160Definitive::begin(SPIClass *spiInstance, short sensorCS) {
+bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs) {
     this->spiInstance = spiInstance;
-    this->sensorSelectPin = sensorCS;
+    this->sensorSelectPin = cs;
 
     pinMode(this->sensorSelectPin, OUTPUT);
     digitalWrite(this->sensorSelectPin, HIGH);
 
+    vTaskDelay(pdMS_TO_TICKS(10));
+    this->spiInstance->begin(sck, miso, mosi);
     vTaskDelay(pdMS_TO_TICKS(10));
 
     this->readRegister(0x7F);
@@ -53,7 +55,7 @@ void BMI160Definitive::writeRegister(uint8_t reg, uint8_t value) {
 
     this->spiInstance->transfer(reg & 0x7F);
     this->spiInstance->transfer(value);
-    
+
     digitalWrite(this->sensorSelectPin, HIGH);
     this->spiInstance->endTransaction();
 }
