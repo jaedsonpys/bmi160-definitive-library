@@ -154,6 +154,40 @@ void BMI160Definitive::setGyroPowerMode(GyroPowerModes powerMode) {
     }
 }
 
+void BMI160Definitive::setAccelRange(AccelRanges range) {
+    uint8_t choosedRange;
+
+    switch (range) {
+        case ACCEL_2G:
+            this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_2G);
+            choosedRange = INTERNAL_ACCEL_RANGE_2G;
+            break;
+        case ACCEL_4G:
+            this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_4G);
+            choosedRange = INTERNAL_ACCEL_RANGE_4G;
+            break;
+        case ACCEL_8G:
+            this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_8G);
+            choosedRange = INTERNAL_ACCEL_RANGE_8G;
+            break;
+        case ACCEL_16G:
+            this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_16G);
+            choosedRange = INTERNAL_ACCEL_RANGE_16G;
+            break;
+    };
+
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // 0b0000011
+    uint8_t selectedRange = this->readRegister(INTERNAL_ACCEL_RANGE_CMD);
+    Serial.println(String(selectedRange, BIN));
+
+    while(selectedRange != choosedRange) {
+        selectedRange = this->readRegister(INTERNAL_ACCEL_RANGE_CMD);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
 AccelerometerData BMI160Definitive::getAccelerometerData() {
     uint8_t xAxisRaw = this->readRegister(0x13);
     uint8_t yAxisRaw = this->readRegister(0x15);
@@ -161,9 +195,9 @@ AccelerometerData BMI160Definitive::getAccelerometerData() {
 
     AccelerometerData gData;
 
-    gData.x = (float)xAxisRaw / 16384.0f;
-    gData.y = (float)yAxisRaw / 16384.0f;
-    gData.z = (float)zAxisRaw / 16384.0f;
+    gData.x = (float)xAxisRaw / 2048.0f;
+    gData.y = (float)yAxisRaw / 2048.0f;
+    gData.z = (float)zAxisRaw / 2048.0f;
 
     return gData;
 }

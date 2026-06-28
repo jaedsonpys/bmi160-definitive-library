@@ -7,11 +7,19 @@
 // Power modes
 #define INTERNAL_ACCEL_NORMAL_POWER_MODE 0x11
 #define INTERNAL_ACCEL_LOW_POWER_MODE 0x12
-#define  INTERNAL_ACCEL_SUSPEND_POWER_MODE 0x10
+#define INTERNAL_ACCEL_SUSPEND_POWER_MODE 0x10
 
 #define INTERNAL_GYRO_NORMAL_POWER_MODE 0x15
 #define INTERNAL_GYRO_SUSPEND_POWER_MODE 0x14
 #define INTERNAL_GYRO_FAST_STARTUP_POWER_MODE 0x17
+
+// Accelerometer ranges
+#define INTERNAL_ACCEL_RANGE_CMD 0x41
+
+#define INTERNAL_ACCEL_RANGE_2G 0x03
+#define INTERNAL_ACCEL_RANGE_4G 0x05
+#define INTERNAL_ACCEL_RANGE_8G 0x08
+#define INTERNAL_ACCEL_RANGE_16G 0xC
 
 #define PMU_STATUS_SUSPEND 0x00
 #define PMU_STATUS_NORMAL 0x01
@@ -38,6 +46,12 @@ enum GyroPowerModes {
     GYRO_FAST_STARTUP_POWER_MODE
 };
 
+enum AccelRanges {
+    ACCEL_2G,
+    ACCEL_4G,
+    ACCEL_8G,
+    ACCEL_16G,
+};
 
 class BMI160Definitive {
     private:
@@ -53,6 +67,8 @@ class BMI160Definitive {
 
         void setAccelPowerMode(AccelPowerModes powerMode);
         void setGyroPowerMode(GyroPowerModes powerMode);
+
+        void setAccelRange(AccelRanges range);
         
         AccelerometerData getAccelerometerData();
         AccelerometerData getGyroscopeData();
