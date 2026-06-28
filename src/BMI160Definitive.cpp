@@ -25,14 +25,7 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, shor
 }
 
 void BMI160Definitive::softReset() {
-    this->spiInstance->beginTransaction(BMI160SPISettings);
-    digitalWrite(this->sensorSelectPin, LOW);
-
-    this->spiInstance->transfer(0xB6);
-    this->spiInstance->transfer(0x00);
-    
-    digitalWrite(this->sensorSelectPin, HIGH);
-    this->spiInstance->endTransaction();
+    this->writeRegister(0x7E, 0xB6);
     vTaskDelay(pdMS_TO_TICKS(100));
 }
 
