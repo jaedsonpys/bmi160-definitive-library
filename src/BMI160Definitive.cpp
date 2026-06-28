@@ -3,7 +3,7 @@
 
 #include <SPI.h>
 
-SPISettings BMI160SPISettings(10000000, MSBFIRST, SPI_MODE0);
+SPISettings BMI160SPISettings(1000000, MSBFIRST, SPI_MODE0);
 
 bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs) {
     this->spiInstance = spiInstance;
@@ -15,10 +15,9 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, shor
     vTaskDelay(pdMS_TO_TICKS(10));
     this->spiInstance->begin(sck, miso, mosi);
     vTaskDelay(pdMS_TO_TICKS(10));
-
+    this->softReset();
     this->readRegister(0x7F);
     vTaskDelay(pdMS_TO_TICKS(10));
-    this->softReset();
 
     uint8_t chipID = this->readRegister(0x00);
     return chipID == 0xD1;
