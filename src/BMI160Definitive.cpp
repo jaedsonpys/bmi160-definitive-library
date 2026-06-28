@@ -3,7 +3,7 @@
 
 #include <SPI.h>
 
-SPISettings BMI160SPISettings(1000000, MSBFIRST, SPI_MODE0);
+SPISettings BMI160SPISettings(10000000, MSBFIRST, SPI_MODE0);
 
 bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs) {
     this->spiInstance = spiInstance;
@@ -19,6 +19,7 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, shor
         return false;
     }
 
+    vTaskDelay(pdMS_TO_TICKS(10));
     this->softReset();
     this->readRegister(0x7F);
     vTaskDelay(pdMS_TO_TICKS(10));
@@ -89,15 +90,15 @@ AccelPowerModes BMI160Definitive::getAccelPowerMode() {
 
 GyroPowerModes BMI160Definitive::getGyroPowerMode() {
     uint8_t pmuStatus = this->readRegister(0x03);
-    uint8_t accelPowerMode = pmuStatus >> 2 & 0x03;
+    uint8_t gyroPowerMode = pmuStatus >> 2 & 0x03;
 
     GyroPowerModes definedPMU;
 
-    if(accelPowerMode == (uint8_t)PMU_STATUS_SUSPEND) {
+    if(gyroPowerMode == (uint8_t)PMU_STATUS_SUSPEND) {
         definedPMU = GYRO_SUSPEND_POWER_MODE;
-    } else if(accelPowerMode == (uint8_t)PMU_STATUS_NORMAL) {
+    } else if(gyroPowerMode == (uint8_t)PMU_STATUS_NORMAL) {
         definedPMU = GYRO_NORMAL_POWER_MODE;
-    } else if(accelPowerMode == (uint8_t)PMU_STATUS_FAST_STARTUP) {
+    } else if(gyroPowerMode == (uint8_t)PMU_STATUS_FAST_STARTUP) {
         definedPMU = GYRO_FAST_STARTUP_POWER_MODE;
     }
 
