@@ -11,10 +11,14 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, shor
 
     pinMode(this->sensorSelectPin, OUTPUT);
     digitalWrite(this->sensorSelectPin, HIGH);
+    vTaskDelay(pdMS_TO_TICKS(10));
 
-    vTaskDelay(pdMS_TO_TICKS(10));
-    this->spiInstance->begin(sck, miso, mosi);
-    vTaskDelay(pdMS_TO_TICKS(10));
+    bool spiStarted = this->spiInstance->begin(sck, miso, mosi);
+    
+    if(!spiStarted) {
+        return false;
+    }
+
     this->softReset();
     this->readRegister(0x7F);
     vTaskDelay(pdMS_TO_TICKS(10));
