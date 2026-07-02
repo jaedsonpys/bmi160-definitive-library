@@ -125,7 +125,7 @@ void BMI160Definitive::setAccelPowerMode(AccelPowerModes powerMode) {
     AccelPowerModes currentPowerMode = this->getAccelPowerMode();
 
     while(currentPowerMode != powerMode) {
-        AccelPowerModes currentPowerMode = this->getAccelPowerMode();
+        currentPowerMode = this->getAccelPowerMode();
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
@@ -150,7 +150,7 @@ void BMI160Definitive::setGyroPowerMode(GyroPowerModes powerMode) {
     GyroPowerModes currentPowerMode = this->getGyroPowerMode();
 
     while(currentPowerMode != powerMode) {
-        GyroPowerModes currentPowerMode = this->getGyroPowerMode();
+        currentPowerMode = this->getGyroPowerMode();
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
