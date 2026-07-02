@@ -332,6 +332,39 @@ AccelerometerData BMI160Definitive::getAccelerometerData() {
     return gData;
 }
 
+GyroscopeData BMI160Definitive::getGyroscopeData() {
+    int16_t xAxisRaw = this->read16BitsRegister(0x0C, 0x0D);
+    int16_t yAxisRaw = this->read16BitsRegister(0x0E, 0x0F);
+    int16_t zAxisRaw = this->read16BitsRegister(0x10, 0x11);
+
+    GyroscopeData gData;
+    float lsbPerDPS;
+
+    switch (this->selectedGyroRange) {
+        case GYRO_RANGE_2000_DPS:
+            lsbPerDPS = 16.4f;
+            break;
+        case GYRO_RANGE_1000_DPS:
+            lsbPerDPS = 32.8f;
+            break;
+        case GYRO_RANGE_500_DPS:
+            lsbPerDPS = 65.6f;
+            break;
+        case GYRO_RANGE_250_DPS:
+            lsbPerDPS = 131.2f;
+            break;
+        case GYRO_RANGE_125_DPS:
+            lsbPerDPS = 262.4f;
+            break;
+    }
+
+    gData.x = (float)xAxisRaw / lsbPerDPS;
+    gData.y = (float)yAxisRaw / lsbPerDPS;
+    gData.z = (float)zAxisRaw / lsbPerDPS;
+
+    return gData;
+}
+
 void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short intrPin) {
     this->writeRegister(INTERNAL_INTERRUPT_CONF_REG, INTERNAL_INTERRUPT_DRDY_ENABLE);
     vTaskDelay(pdMS_TO_TICKS(10));
