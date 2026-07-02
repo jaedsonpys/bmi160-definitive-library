@@ -182,6 +182,33 @@ void BMI160Definitive::setAccelDataRate(AccelDataRate dataRate) {
     }
 }
 
+void BMI160Definitive::setGyroDataRate(GyroDataRate dataRate) {
+    uint8_t currentConf = this->readRegister(INTERNAL_GYRO_CONF_CMD);
+    uint8_t selectedODR;
+
+    switch (dataRate) {
+        case GYRO_100HZ_DATA_RATE:
+            selectedODR = INTERNAL_GYRO_ODR_100HZ;
+            break;
+        case GYRO_1600HZ_DATA_RATE:
+            selectedODR = INTERNAL_GYRO_ODR_1600HZ;
+            break;
+        case GYRO_3200HZ_DATA_RATE:
+            selectedODR = INTERNAL_GYRO_ODR_3200HZ;
+            break;
+    }
+
+    uint8_t newConf = currentConf | selectedODR;
+    this->writeRegister(INTERNAL_GYRO_CONF_CMD, newConf);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    uint8_t updatedConf = this->readRegister(INTERNAL_GYRO_CONF_CMD);
+    while(updatedConf != newConf) {
+        updatedConf = this->readRegister(INTERNAL_GYRO_CONF_CMD);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
 void BMI160Definitive::setAccelRange(AccelRanges range) {
     uint8_t choosedRange;
 

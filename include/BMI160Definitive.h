@@ -33,6 +33,12 @@
 #define INTERNAL_ACCEL_ODR_800HZ 0x0B
 #define INTERNAL_ACCEL_ODR_1600HZ 0x0C
 
+// Gyroscope configuration commands
+#define INTERNAL_GYRO_CONF_CMD 0x40
+#define INTERNAL_GYRO_ODR_100HZ 0x08
+#define INTERNAL_GYRO_ODR_1600HZ 0x0C
+#define INTERNAL_GYRO_ODR_3200HZ 0xD
+
 struct AccelerometerData {
     float x, y, z;
 };
@@ -66,6 +72,12 @@ enum AccelDataRate {
     ACCEL_1600HZ_DATA_RATE
 };
 
+enum GyroDataRate {
+    GYRO_100HZ_DATA_RATE,
+    GYRO_1600HZ_DATA_RATE,
+    GYRO_3200HZ_DATA_RATE
+};
+
 class BMI160Definitive {
     private:
         SPIClass *spiInstance;
@@ -84,6 +96,7 @@ class BMI160Definitive {
         void setAccelPowerMode(AccelPowerModes powerMode);
         void setGyroPowerMode(GyroPowerModes powerMode);
         void setAccelDataRate(AccelDataRate dataRate);
+        void setGyroDataRate(GyroDataRate dataRate);
         void setAccelRange(AccelRanges range);
         
         AccelerometerData getAccelerometerData();
