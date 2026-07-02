@@ -57,6 +57,7 @@ class BMI160Definitive {
     private:
         SPIClass *spiInstance;
         short sensorSelectPin;
+        AccelRanges selectedAccelRange = AccelRanges::ACCEL_2G;
 
         int16_t read16BitsRegister(uint8_t msbReg, uint8_t lsbReg);
     

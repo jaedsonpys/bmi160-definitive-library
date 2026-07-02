@@ -162,18 +162,22 @@ void BMI160Definitive::setAccelRange(AccelRanges range) {
         case ACCEL_2G:
             this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_2G);
             choosedRange = INTERNAL_ACCEL_RANGE_2G;
+            this->selectedAccelRange = ACCEL_2G;
             break;
         case ACCEL_4G:
             this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_4G);
             choosedRange = INTERNAL_ACCEL_RANGE_4G;
+            this->selectedAccelRange = ACCEL_4G;
             break;
         case ACCEL_8G:
             this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_8G);
             choosedRange = INTERNAL_ACCEL_RANGE_8G;
+            this->selectedAccelRange = ACCEL_8G;
             break;
         case ACCEL_16G:
             this->writeRegister(INTERNAL_ACCEL_RANGE_CMD, INTERNAL_ACCEL_RANGE_16G);
             choosedRange = INTERNAL_ACCEL_RANGE_16G;
+            this->selectedAccelRange = ACCEL_16G;
             break;
     };
 
@@ -210,10 +214,26 @@ AccelerometerData BMI160Definitive::getAccelerometerData() {
     int16_t zAxisRaw = this->read16BitsRegister(0x16, 0x17);
 
     AccelerometerData gData;
+    float lsbPerG;
 
-    gData.x = (float)xAxisRaw / 2048.0f;
-    gData.y = (float)yAxisRaw / 2048.0f;
-    gData.z = (float)zAxisRaw / 2048.0f;
+    switch (this->selectedAccelRange) {
+        case ACCEL_2G:
+            lsbPerG = 16384.0f;
+            break;
+        case ACCEL_4G:
+            lsbPerG = 8192.0f;
+            break;
+        case ACCEL_8G:
+            lsbPerG = 4096.0f;
+            break;
+        case ACCEL_16G:
+            lsbPerG = 2048.0f;
+            break;
+    }
+
+    gData.x = (float)xAxisRaw / lsbPerG;
+    gData.y = (float)yAxisRaw / lsbPerG;
+    gData.z = (float)zAxisRaw / lsbPerG;
 
     return gData;
 }
