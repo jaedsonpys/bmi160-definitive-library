@@ -21,10 +21,17 @@
 #define INTERNAL_ACCEL_RANGE_8G 0x08
 #define INTERNAL_ACCEL_RANGE_16G 0x0C
 
+// PMU status
 #define PMU_STATUS_SUSPEND 0x00
 #define PMU_STATUS_NORMAL 0x01
 #define PMU_STATUS_LOW_POWER 0x02
 #define PMU_STATUS_FAST_STARTUP 0x03
+
+// Accelerometer configuration commands
+#define INTERNAL_ACCEL_CONF_CMD 0x40
+#define INTERNAL_ACCEL_ODR_100HZ 0x08
+#define INTERNAL_ACCEL_ODR_800HZ 0x0B
+#define INTERNAL_ACCEL_ODR_1600HZ 0x0C
 
 struct AccelerometerData {
     float x, y, z;
@@ -53,6 +60,12 @@ enum AccelRanges {
     ACCEL_16G,
 };
 
+enum AccelDataRate {
+    ACCEL_100HZ_DATA_RATE,
+    ACCEL_800HZ_DATA_RATE,
+    ACCEL_1600HZ_DATA_RATE
+};
+
 class BMI160Definitive {
     private:
         SPIClass *spiInstance;
@@ -70,7 +83,7 @@ class BMI160Definitive {
 
         void setAccelPowerMode(AccelPowerModes powerMode);
         void setGyroPowerMode(GyroPowerModes powerMode);
-
+        void setAccelDataRate(AccelDataRate dataRate);
         void setAccelRange(AccelRanges range);
         
         AccelerometerData getAccelerometerData();
