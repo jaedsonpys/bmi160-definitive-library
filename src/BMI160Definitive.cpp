@@ -209,6 +209,46 @@ void BMI160Definitive::setGyroDataRate(GyroDataRate dataRate) {
     }
 }
 
+void BMI160Definitive::setGyroRange(GyroRanges range) {
+    uint8_t choosedRange;
+
+    switch (range) {
+        case GYRO_RANGE_2000_DPS:
+            this->writeRegister(INTERNAL_GYRO_RANGE_CMD, INTERNAL_GYRO_RANGE_2000);
+            choosedRange = INTERNAL_GYRO_RANGE_2000;
+            this->selectedGyroRange = GYRO_RANGE_2000_DPS;
+            break;
+        case GYRO_RANGE_1000_DPS:
+            this->writeRegister(INTERNAL_GYRO_RANGE_CMD, INTERNAL_GYRO_RANGE_1000);
+            choosedRange = INTERNAL_GYRO_RANGE_1000;
+            this->selectedGyroRange = GYRO_RANGE_1000_DPS;
+            break;
+        case GYRO_RANGE_500_DPS:
+            this->writeRegister(INTERNAL_GYRO_RANGE_CMD, INTERNAL_GYRO_RANGE_500);
+            choosedRange = INTERNAL_GYRO_RANGE_500;
+            this->selectedGyroRange = GYRO_RANGE_500_DPS;
+            break;
+        case GYRO_RANGE_250_DPS:
+            this->writeRegister(INTERNAL_GYRO_RANGE_CMD, INTERNAL_GYRO_RANGE_250);
+            choosedRange = INTERNAL_GYRO_RANGE_250;
+            this->selectedGyroRange = GYRO_RANGE_250_DPS;
+            break;
+        case GYRO_RANGE_125_DPS:
+            this->writeRegister(INTERNAL_GYRO_RANGE_CMD, INTERNAL_GYRO_RANGE_125);
+            choosedRange = INTERNAL_GYRO_RANGE_125;
+            this->selectedGyroRange = GYRO_RANGE_125_DPS;
+            break;
+    };
+
+    vTaskDelay(pdMS_TO_TICKS(10));
+    uint8_t selectedRange = this->readRegister(INTERNAL_GYRO_RANGE_CMD);
+
+    while(selectedRange != choosedRange) {
+        selectedRange = this->readRegister(INTERNAL_GYRO_RANGE_CMD);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
+
 void BMI160Definitive::setAccelRange(AccelRanges range) {
     uint8_t choosedRange;
 

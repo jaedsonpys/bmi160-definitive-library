@@ -21,6 +21,14 @@
 #define INTERNAL_ACCEL_RANGE_8G 0x08
 #define INTERNAL_ACCEL_RANGE_16G 0x0C
 
+// Gyroscope ranges
+#define INTERNAL_GYRO_RANGE_CMD 0x43
+#define INTERNAL_GYRO_RANGE_2000 0x00
+#define INTERNAL_GYRO_RANGE_1000 0x01
+#define INTERNAL_GYRO_RANGE_500 0x02
+#define INTERNAL_GYRO_RANGE_250 0x03
+#define INTERNAL_GYRO_RANGE_125 0x04
+
 // PMU status
 #define PMU_STATUS_SUSPEND 0x00
 #define PMU_STATUS_NORMAL 0x01
@@ -66,6 +74,14 @@ enum AccelRanges {
     ACCEL_16G,
 };
 
+enum GyroRanges {
+    GYRO_RANGE_2000_DPS,
+    GYRO_RANGE_1000_DPS,
+    GYRO_RANGE_500_DPS,
+    GYRO_RANGE_250_DPS,
+    GYRO_RANGE_125_DPS,
+};
+
 enum AccelDataRate {
     ACCEL_100HZ_DATA_RATE,
     ACCEL_800HZ_DATA_RATE,
@@ -82,7 +98,9 @@ class BMI160Definitive {
     private:
         SPIClass *spiInstance;
         short sensorSelectPin;
-        AccelRanges selectedAccelRange = AccelRanges::ACCEL_2G;
+
+        AccelRanges selectedAccelRange = ACCEL_2G;
+        GyroRanges selectedGyroRange = GYRO_RANGE_2000_DPS;
 
         int16_t read16BitsRegister(uint8_t msbReg, uint8_t lsbReg);
     
@@ -98,6 +116,7 @@ class BMI160Definitive {
         void setAccelDataRate(AccelDataRate dataRate);
         void setGyroDataRate(GyroDataRate dataRate);
         void setAccelRange(AccelRanges range);
+        void setGyroRange(GyroRanges range);
         
         AccelerometerData getAccelerometerData();
         AccelerometerData getGyroscopeData();
