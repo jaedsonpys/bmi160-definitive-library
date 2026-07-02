@@ -363,6 +363,5 @@ void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short in
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 
-    digitalPinToInterrupt(intrPin);
-    attachInterrupt(intrPin, intrCallback, HIGH);
+    attachInterrupt(digitalPinToInterrupt(intrPin), intrCallback, HIGH);
 }
