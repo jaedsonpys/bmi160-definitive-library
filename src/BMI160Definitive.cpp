@@ -200,7 +200,7 @@ int16_t BMI160Definitive::read16BitsRegister(uint8_t lsbReg, uint8_t msbReg) {
     digitalWrite(this->sensorSelectPin, HIGH);
     this->spiInstance->endTransaction();
 
-    int16_t fullValue = (uint16_t)(msbRegValue << 8) | lsbRegValue;
+    int16_t fullValue = (int16_t)(msbRegValue << 8) | lsbRegValue;
     return fullValue;
 }
 
