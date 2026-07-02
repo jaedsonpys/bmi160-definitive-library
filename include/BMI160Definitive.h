@@ -19,7 +19,7 @@
 #define INTERNAL_ACCEL_RANGE_2G 0x03
 #define INTERNAL_ACCEL_RANGE_4G 0x05
 #define INTERNAL_ACCEL_RANGE_8G 0x08
-#define INTERNAL_ACCEL_RANGE_16G 0xC
+#define INTERNAL_ACCEL_RANGE_16G 0x0C
 
 #define PMU_STATUS_SUSPEND 0x00
 #define PMU_STATUS_NORMAL 0x01
@@ -27,7 +27,7 @@
 #define PMU_STATUS_FAST_STARTUP 0x03
 
 struct AccelerometerData {
-    int x, y, z;
+    float x, y, z;
 };
 
 struct GyroscopeData {
@@ -57,6 +57,8 @@ class BMI160Definitive {
     private:
         SPIClass *spiInstance;
         short sensorSelectPin;
+
+        int16_t read16BitsRegister(uint8_t msbReg, uint8_t lsbReg);
     
     public:
         bool begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs);

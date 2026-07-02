@@ -178,10 +178,7 @@ void BMI160Definitive::setAccelRange(AccelRanges range) {
     };
 
     vTaskDelay(pdMS_TO_TICKS(10));
-
-    // 0b0000011
     uint8_t selectedRange = this->readRegister(INTERNAL_ACCEL_RANGE_CMD);
-    Serial.println(String(selectedRange, BIN));
 
     while(selectedRange != choosedRange) {
         selectedRange = this->readRegister(INTERNAL_ACCEL_RANGE_CMD);
@@ -189,10 +186,28 @@ void BMI160Definitive::setAccelRange(AccelRanges range) {
     }
 }
 
+int16_t BMI160Definitive::read16BitsRegister(uint8_t lsbReg, uint8_t msbReg) {
+    uint8_t msbRegValue;
+    uint8_t lsbRegValue;
+
+    this->spiInstance->beginTransaction(BMI160SPISettings);
+    digitalWrite(this->sensorSelectPin, LOW);
+
+    this->spiInstance->transfer(msbReg | 0x80);
+    msbRegValue = this->spiInstance->transfer(lsbReg | 0x80);
+    lsbRegValue = this->spiInstance->transfer(0x00);
+
+    digitalWrite(this->sensorSelectPin, HIGH);
+    this->spiInstance->endTransaction();
+
+    int16_t fullValue = (uint16_t)(msbRegValue << 8) | lsbRegValue;
+    return fullValue;
+}
+
 AccelerometerData BMI160Definitive::getAccelerometerData() {
-    uint8_t xAxisRaw = this->readRegister(0x13);
-    uint8_t yAxisRaw = this->readRegister(0x15);
-    uint8_t zAxisRaw = this->readRegister(0x17);
+    int16_t xAxisRaw = this->read16BitsRegister(0x12, 0x13);
+    int16_t yAxisRaw = this->read16BitsRegister(0x14, 0x15);
+    int16_t zAxisRaw = this->read16BitsRegister(0x16, 0x17);
 
     AccelerometerData gData;
 
