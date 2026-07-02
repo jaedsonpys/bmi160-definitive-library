@@ -363,5 +363,15 @@ void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short in
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 
-    attachInterrupt(digitalPinToInterrupt(intrPin), intrCallback, HIGH);
-}
+    this->writeRegister(INTERNAL_INT_LATCH_REG, INTERNAL_INT_LATCH_TEMP_312_5_US);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    uint8_t latchConf = this->readRegister(INTERNAL_INT_LATCH_REG);
+
+    while(latchConf != INTERNAL_INT_LATCH_TEMP_312_5_US) {
+        latchConf = this->readRegister(INTERNAL_INT_LATCH_REG);
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+
+    attachInterrupt(digitalPinToInterrupt(intrPin), intrCallback, RISING);
+};

@@ -56,6 +56,9 @@
 #define INTERNAL_INT_OUT_CTRL_CONF_REG 0x53
 #define INTERNAL_INT1_CONFIG 0xA
 
+#define INTERNAL_INT_LATCH_REG 0x54
+#define INTERNAL_INT_LATCH_TEMP_312_5_US 0x01
+
 
 struct AccelerometerData {
     float x, y, z;
