@@ -47,6 +47,16 @@
 #define INTERNAL_GYRO_ODR_1600HZ 0x0C
 #define INTERNAL_GYRO_ODR_3200HZ 0xD
 
+// Interrupts
+#define INTERNAL_INTERRUPT_CONF_REG 0x51 
+#define INTERNAL_INTR_ATTACH_CONF_REG 0x56
+#define INTERNAL_INTERRUPT_DRDY_ENABLE 0x10 
+#define INTERNAL_INTR_1_ATTACH_DRDY 0x80
+
+#define INTERNAL_INT_OUT_CTRL_CONF_REG 0x53
+#define INTERNAL_INT1_CONFIG 0xA
+
+
 struct AccelerometerData {
     float x, y, z;
 };
@@ -94,6 +104,8 @@ enum GyroDataRate {
     GYRO_3200HZ_DATA_RATE
 };
 
+typedef void (*INTRFunction)(void);
+
 class BMI160Definitive {
     private:
         SPIClass *spiInstance;
@@ -117,6 +129,8 @@ class BMI160Definitive {
         void setGyroDataRate(GyroDataRate dataRate);
         void setAccelRange(AccelRanges range);
         void setGyroRange(GyroRanges range);
+
+        void setDataReadyInterrupt(INTRFunction intrCallback, short intrPin);
         
         AccelerometerData getAccelerometerData();
         AccelerometerData getGyroscopeData();
