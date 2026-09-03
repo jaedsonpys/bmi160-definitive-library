@@ -171,11 +171,14 @@ void BMI160Definitive::setAccelDataRate(AccelDataRate dataRate) {
             break;
     }
 
-    uint8_t newConf = currentConf | selectedODR;
+    uint8_t newConf = 0b0010;
+    newConf = newConf << 4 | selectedODR;
+
     this->writeRegister(INTERNAL_ACCEL_CONF_CMD, newConf);
     vTaskDelay(pdMS_TO_TICKS(10));
 
     uint8_t updatedConf = this->readRegister(INTERNAL_ACCEL_CONF_CMD);
+
     while(updatedConf != newConf) {
         updatedConf = this->readRegister(INTERNAL_ACCEL_CONF_CMD);
         vTaskDelay(pdMS_TO_TICKS(10));
@@ -198,11 +201,14 @@ void BMI160Definitive::setGyroDataRate(GyroDataRate dataRate) {
             break;
     }
 
-    uint8_t newConf = currentConf | selectedODR;
+    uint8_t newConf = 0b0010;
+    newConf = newConf << 4 | selectedODR;
+
     this->writeRegister(INTERNAL_GYRO_CONF_CMD, newConf);
     vTaskDelay(pdMS_TO_TICKS(10));
 
     uint8_t updatedConf = this->readRegister(INTERNAL_GYRO_CONF_CMD);
+
     while(updatedConf != newConf) {
         updatedConf = this->readRegister(INTERNAL_GYRO_CONF_CMD);
         vTaskDelay(pdMS_TO_TICKS(10));
