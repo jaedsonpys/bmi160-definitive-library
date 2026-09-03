@@ -337,9 +337,12 @@ AccelerometerData BMI160Definitive::getAccelerometerData() {
 }
 
 GyroscopeData BMI160Definitive::getGyroscopeData() {
-    int16_t xAxisRaw = this->read16BitsRegister(0x0C, 0x0D);
-    int16_t yAxisRaw = this->read16BitsRegister(0x0E, 0x0F);
-    int16_t zAxisRaw = this->read16BitsRegister(0x10, 0x11);
+    uint8_t gyroscopeDataBuffer[6];
+    this->readRegisters(0x0C, gyroscopeDataBuffer, 6);
+
+    int16_t xAxisRaw = ((int16_t)(gyroscopeDataBuffer[1]) << 8) | gyroscopeDataBuffer[0];
+    int16_t yAxisRaw = ((int16_t)(gyroscopeDataBuffer[3]) << 8) | gyroscopeDataBuffer[2];
+    int16_t zAxisRaw = ((int16_t)(gyroscopeDataBuffer[5]) << 8) | gyroscopeDataBuffer[4];
 
     GyroscopeData gData;
     float lsbPerDPS;
