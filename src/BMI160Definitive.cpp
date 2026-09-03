@@ -284,24 +284,6 @@ void BMI160Definitive::setAccelRange(AccelRanges range) {
     }
 }
 
-int16_t BMI160Definitive::read16BitsRegister(uint8_t lsbReg, uint8_t msbReg) {
-    uint8_t msbRegValue;
-    uint8_t lsbRegValue;
-
-    this->spiInstance->beginTransaction(BMI160SPISettings);
-    digitalWrite(this->sensorSelectPin, LOW);
-
-    this->spiInstance->transfer(msbReg | 0x80);
-    msbRegValue = this->spiInstance->transfer(lsbReg | 0x80);
-    lsbRegValue = this->spiInstance->transfer(0x00);
-
-    digitalWrite(this->sensorSelectPin, HIGH);
-    this->spiInstance->endTransaction();
-
-    int16_t fullValue = (int16_t)(msbRegValue << 8) | lsbRegValue;
-    return fullValue;
-}
-
 AccelerometerData BMI160Definitive::getAccelerometerData() {
     uint8_t accelerometerDataBuffer[6];
 

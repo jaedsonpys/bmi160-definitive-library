@@ -116,8 +116,6 @@ class BMI160Definitive {
 
         AccelRanges selectedAccelRange = ACCEL_2G;
         GyroRanges selectedGyroRange = GYRO_RANGE_2000_DPS;
-
-        int16_t read16BitsRegister(uint8_t msbReg, uint8_t lsbReg);
     
     public:
         bool begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs);
