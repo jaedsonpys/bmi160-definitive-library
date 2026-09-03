@@ -3,7 +3,7 @@
 
 #include <SPI.h>
 
-SPISettings BMI160SPISettings(10000000, MSBFIRST, SPI_MODE0);
+SPISettings BMI160SPISettings(10'000'000, MSBFIRST, SPI_MODE0);
 
 bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs) {
     this->spiInstance = spiInstance;
@@ -25,7 +25,19 @@ bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, shor
     vTaskDelay(pdMS_TO_TICKS(10));
 
     uint8_t chipID = this->readRegister(0x00);
-    return chipID == 0xD1;
+
+    if(chipID != 0xD1) {
+        return false;
+    }
+
+    this->setAccelPowerMode(AccelPowerModes::ACCEL_NORMAL_POWER_MODE);
+    this->setGyroPowerMode(GyroPowerModes::GYRO_NORMAL_POWER_MODE);
+    this->setAccelDataRate(AccelDataRate::ACCEL_1600HZ_DATA_RATE);
+    this->setGyroDataRate(GyroDataRate::GYRO_1600HZ_DATA_RATE);
+    this->setAccelRange(AccelRanges::ACCEL_16G);
+    this->setGyroRange(GyroRanges::GYRO_RANGE_250_DPS);
+
+    return true;
 }
 
 void BMI160Definitive::softReset() {
