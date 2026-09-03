@@ -139,7 +139,7 @@ class BMI160Definitive {
         GyroscopeData getGyroscopeData();
         
         uint8_t readRegister(uint8_t reg);
-        void readRegisters(uint8_t reg, uint8_t *buffer, uint8_t len);
+        void readRegisters(uint8_t reg, uint8_t *buffer, size_t numRegisters);
         void writeRegister(uint8_t reg, uint8_t value);
     };
 

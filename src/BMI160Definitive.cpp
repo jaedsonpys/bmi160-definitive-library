@@ -57,13 +57,13 @@ void BMI160Definitive::writeRegister(uint8_t reg, uint8_t value) {
     this->spiInstance->endTransaction();
 }
 
-void BMI160Definitive::readRegisters(uint8_t reg, uint8_t *buffer, uint8_t len) {
+void BMI160Definitive::readRegisters(uint8_t reg, uint8_t *buffer, size_t numRegisters) {
     this->spiInstance->beginTransaction(BMI160SPISettings);
     digitalWrite(this->sensorSelectPin, LOW);
 
     this->spiInstance->transfer(reg | 0x80);
 
-    for(int i = 0; i < len; i++) {
+    for(int i = 0; i < numRegisters; i++) {
         buffer[i] = this->spiInstance->transfer(0x00);
     }
 
@@ -303,9 +303,13 @@ int16_t BMI160Definitive::read16BitsRegister(uint8_t lsbReg, uint8_t msbReg) {
 }
 
 AccelerometerData BMI160Definitive::getAccelerometerData() {
-    int16_t xAxisRaw = this->read16BitsRegister(0x12, 0x13);
-    int16_t yAxisRaw = this->read16BitsRegister(0x14, 0x15);
-    int16_t zAxisRaw = this->read16BitsRegister(0x16, 0x17);
+    uint8_t accelerometerDataBuffer[6];
+
+    this->readRegisters(0x12, accelerometerDataBuffer, 6);
+
+    int16_t xAxisRaw = ((int16_t)(accelerometerDataBuffer[1]) << 8) | accelerometerDataBuffer[0];
+    int16_t yAxisRaw = ((int16_t)(accelerometerDataBuffer[3]) << 8) | accelerometerDataBuffer[2];
+    int16_t zAxisRaw = ((int16_t)(accelerometerDataBuffer[5]) << 8) | accelerometerDataBuffer[4];
 
     AccelerometerData gData;
     float lsbPerG;
