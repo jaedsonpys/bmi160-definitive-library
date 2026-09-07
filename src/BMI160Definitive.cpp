@@ -372,6 +372,73 @@ GyroscopeData BMI160Definitive::getGyroscopeData() {
     return gData;
 }
 
+AccelGyroData BMI160Definitive::getAccelAndGyroData() {
+    uint8_t unifiedData[12];
+
+    readRegisters(0x0C, unifiedData, 12);
+
+    int16_t gyroXAxisRaw = ((int16_t)(unifiedData[1]) << 8) | unifiedData[0];
+    int16_t gyroYAxisRaw = ((int16_t)(unifiedData[3]) << 8) | unifiedData[2];
+    int16_t gyroZAxisRaw = ((int16_t)(unifiedData[5]) << 8) | unifiedData[4];
+
+    int16_t accelXAxisRaw = ((int16_t)(unifiedData[7]) << 8) | unifiedData[6];
+    int16_t accelYAxisRaw = ((int16_t)(unifiedData[9]) << 8) | unifiedData[8];
+    int16_t accelZAxisRaw = ((int16_t)(unifiedData[11]) << 8) | unifiedData[10];
+
+    float gyroLSBPerDPS;
+    float accelLSBPerDPS;
+
+    switch (this->selectedGyroRange) {
+        case GYRO_RANGE_2000_DPS:
+            gyroLSBPerDPS = 16.4f;
+            break;
+        case GYRO_RANGE_1000_DPS:
+            gyroLSBPerDPS = 32.8f;
+            break;
+        case GYRO_RANGE_500_DPS:
+            gyroLSBPerDPS = 65.6f;
+            break;
+        case GYRO_RANGE_250_DPS:
+            gyroLSBPerDPS = 131.2f;
+            break;
+        case GYRO_RANGE_125_DPS:
+            gyroLSBPerDPS = 262.4f;
+            break;
+    }
+
+    switch (this->selectedAccelRange) {
+        case ACCEL_2G:
+            accelLSBPerDPS = 16384.0f;
+            break;
+        case ACCEL_4G:
+            accelLSBPerDPS = 8192.0f;
+            break;
+        case ACCEL_8G:
+            accelLSBPerDPS = 4096.0f;
+            break;
+        case ACCEL_16G:
+            accelLSBPerDPS = 2048.0f;
+            break;
+    }
+
+    GyroscopeData gyroData;
+    AccelerometerData accelData;
+    AccelGyroData unifiedAccelGyro;
+
+    accelData.x = (float)accelXAxisRaw / accelLSBPerDPS;
+    accelData.y = (float)accelYAxisRaw / accelLSBPerDPS;
+    accelData.z = (float)accelZAxisRaw / accelLSBPerDPS;
+
+    gyroData.x = (float)gyroXAxisRaw / gyroLSBPerDPS;
+    gyroData.y = (float)gyroYAxisRaw / gyroLSBPerDPS;
+    gyroData.z = (float)gyroZAxisRaw / gyroLSBPerDPS;
+
+    unifiedAccelGyro.accelerometer = accelData;
+    unifiedAccelGyro.gyroscope = gyroData;
+
+    return unifiedAccelGyro;
+}
+
 void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short intrPin) {
     this->writeRegister(INTERNAL_INTERRUPT_CONF_REG, INTERNAL_INTERRUPT_DRDY_ENABLE);
     vTaskDelay(pdMS_TO_TICKS(10));

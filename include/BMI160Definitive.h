@@ -68,6 +68,11 @@ struct GyroscopeData {
     float x, y, z;
 };
 
+struct AccelGyroData {
+    AccelerometerData accelerometer;
+    GyroscopeData gyroscope;
+};
+
 enum AccelPowerModes {
     ACCEL_NORMAL_POWER_MODE,
     ACCEL_SUSPEND_POWER_MODE,
@@ -136,6 +141,8 @@ class BMI160Definitive {
         AccelerometerData getAccelerometerData();
         GyroscopeData getGyroscopeData();
         
+        AccelGyroData getAccelAndGyroData();
+
         uint8_t readRegister(uint8_t reg);
         void readRegisters(uint8_t reg, uint8_t *buffer, size_t numRegisters);
         void writeRegister(uint8_t reg, uint8_t value);
