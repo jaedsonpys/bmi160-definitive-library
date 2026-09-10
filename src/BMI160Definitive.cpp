@@ -466,7 +466,7 @@ void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short in
     uint8_t intrOutConf = this->readRegister(INTERNAL_INT_OUT_CTRL_CONF_REG);
 
     while(intrOutConf != INTERNAL_INT1_CONFIG) {
-        intrAttachConf = this->readRegister(INTERNAL_INT_OUT_CTRL_CONF_REG);
+        intrOutConf = this->readRegister(INTERNAL_INT_OUT_CTRL_CONF_REG);
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 
