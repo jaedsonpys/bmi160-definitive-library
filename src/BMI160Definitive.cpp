@@ -482,3 +482,32 @@ void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short in
 
     attachInterrupt(digitalPinToInterrupt(intrPin), intrCallback, RISING);
 };
+
+void BMI160Definitive::calibrateBMI160() {
+    uint8_t focConf = 0b01111101;
+    this->writeRegister(INTERNAL_FOC_CONF_REG, focConf);
+
+    uint8_t readFocConf;
+
+    while(readFocConf != focConf) {
+        readFocConf = this->readRegister(INTERNAL_FOC_CONF_REG);
+    }
+
+    this->writeRegister(INTERNAL_CMD_REG, INTERNAL_START_FOC_CMD);
+    uint8_t focCompleted;
+
+    while(!focCompleted) {
+        uint8_t statusReg = this->readRegister(INTERNAL_SENSOR_STATUS_REG);
+        focCompleted = (statusReg & 0b00001000) >> 3;
+    }
+
+    uint8_t offset6Reg = this->readRegister(INTERNAL_OFFSET6_REG);
+    uint8_t enabledOffsetsValue = offset6Reg | 0xC0;
+    
+    this->writeRegister(INTERNAL_OFFSET6_REG, enabledOffsetsValue);
+    uint8_t updatedOffset6Reg;
+
+    while(updatedOffset6Reg != enabledOffsetsValue) {
+        updatedOffset6Reg = this->readRegister(INTERNAL_OFFSET6_REG);
+    }
+}

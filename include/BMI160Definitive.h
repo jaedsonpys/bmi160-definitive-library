@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include <SPI.h>
 
+#define INTERNAL_CMD_REG 0x7E
+#define INTERNAL_SENSOR_STATUS_REG 0x1B
+
 // Power modes
 #define INTERNAL_ACCEL_SUSPEND_POWER_MODE 0x10
 #define INTERNAL_ACCEL_NORMAL_POWER_MODE 0x11
@@ -59,6 +62,10 @@
 #define INTERNAL_INT_LATCH_REG 0x54
 #define INTERNAL_INT_LATCH_TEMP_312_5_US 0x01
 
+// Fast Offset Compensation
+#define INTERNAL_FOC_CONF_REG 0x69
+#define INTERNAL_START_FOC_CMD 0x03
+#define INTERNAL_OFFSET6_REG 0x77
 
 struct AccelerometerData {
     float x, y, z;
@@ -135,6 +142,8 @@ class BMI160Definitive {
         void setGyroDataRate(GyroDataRate dataRate);
         void setAccelRange(AccelRanges range);
         void setGyroRange(GyroRanges range);
+
+        void calibrateBMI160();
 
         void setDataReadyInterrupt(INTRFunction intrCallback, short intrPin);
         
