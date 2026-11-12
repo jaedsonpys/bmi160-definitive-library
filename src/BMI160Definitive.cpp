@@ -5,6 +5,17 @@
 
 SPISettings BMI160SPISettings(10'000'000, MSBFIRST, SPI_MODE0);
 
+void BMI160Definitive::writeAndCheck(uint8_t reg, uint8_t value, uint8_t expected) {
+    this->writeRegister(reg, value);
+
+    uint8_t check = this->readRegister(reg);
+
+    while(check != expected) {
+        check = this->readRegister(reg);
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+}
+
 bool BMI160Definitive::begin(SPIClass *spiInstance, short miso, short mosi, short sck, short cs) {
     this->spiInstance = spiInstance;
     this->sensorSelectPin = cs;
