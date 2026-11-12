@@ -451,45 +451,14 @@ AccelGyroData BMI160Definitive::getAccelAndGyroData() {
 }
 
 void BMI160Definitive::setDataReadyInterrupt(INTRFunction intrCallback, short intrPin) {
-    this->writeRegister(INTERNAL_INTERRUPT_CONF_REG, INTERNAL_INTERRUPT_DRDY_ENABLE);
+    this->writeAndCheck(INTERNAL_INTR_CONF_REG, INTERNAL_INTR_DRDY_ENABLE);
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    uint8_t intrConf = this->readRegister(INTERNAL_INTERRUPT_CONF_REG);
-
-    while(intrConf != INTERNAL_INTERRUPT_DRDY_ENABLE) {
-        intrConf = this->readRegister(INTERNAL_INTERRUPT_CONF_REG);
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
-
-    this->writeRegister(INTERNAL_INTR_ATTACH_CONF_REG, INTERNAL_INTR_1_ATTACH_DRDY);
+    this->writeAndCheck(INTERNAL_INT_OUT_CTRL_CONF_REG, INTERNAL_INT_OUT_CONFIG_VALUE);
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    uint8_t intrAttachConf = this->readRegister(INTERNAL_INTR_ATTACH_CONF_REG);
-
-    while(intrAttachConf != INTERNAL_INTR_1_ATTACH_DRDY) {
-        intrAttachConf = this->readRegister(INTERNAL_INTR_ATTACH_CONF_REG);
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
-
-    this->writeRegister(INTERNAL_INT_OUT_CTRL_CONF_REG, INTERNAL_INT1_CONFIG);
+    this->writeAndCheck(INTERNAL_INTR_MAP_CONF_REG, INTERNAL_INTR_MAP_DRDY_ENABLE_VALUE);
     vTaskDelay(pdMS_TO_TICKS(10));
-
-    uint8_t intrOutConf = this->readRegister(INTERNAL_INT_OUT_CTRL_CONF_REG);
-
-    while(intrOutConf != INTERNAL_INT1_CONFIG) {
-        intrOutConf = this->readRegister(INTERNAL_INT_OUT_CTRL_CONF_REG);
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
-
-    this->writeRegister(INTERNAL_INT_LATCH_REG, INTERNAL_INT_LATCH_TEMP_312_5_US);
-    vTaskDelay(pdMS_TO_TICKS(10));
-
-    uint8_t latchConf = this->readRegister(INTERNAL_INT_LATCH_REG);
-
-    while(latchConf != INTERNAL_INT_LATCH_TEMP_312_5_US) {
-        latchConf = this->readRegister(INTERNAL_INT_LATCH_REG);
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
 
     attachInterrupt(digitalPinToInterrupt(intrPin), intrCallback, RISING);
 };
