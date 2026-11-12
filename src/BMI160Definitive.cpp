@@ -5,12 +5,12 @@
 
 SPISettings BMI160SPISettings(10'000'000, MSBFIRST, SPI_MODE0);
 
-void BMI160Definitive::writeAndCheck(uint8_t reg, uint8_t value, uint8_t expected) {
+void BMI160Definitive::writeAndCheck(uint8_t reg, uint8_t value) {
     this->writeRegister(reg, value);
 
     uint8_t check = this->readRegister(reg);
 
-    while(check != expected) {
+    while(check != value) {
         check = this->readRegister(reg);
         vTaskDelay(pdMS_TO_TICKS(1));
     }
