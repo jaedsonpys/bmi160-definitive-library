@@ -10,7 +10,7 @@ Tired of using giant and old BMI160 libraries for Arduino/Espresif boards, I dec
 
 - **SPI Communication**: Set your prefered SPI settings and pins. The library doesn't control what pins you should use.
 
-```cpp
+```c++
 #include <BMI160Definitive.h>
 
 #define IMU_CS_PIN 21
@@ -30,7 +30,7 @@ void setup() {
 
 > Only the INT1 pin from can use the Data Ready interrupt!
 
-```cpp
+```c++
 #include <BMI160Definitive.h>
 
 #define IMU_CS_PIN 21
@@ -62,7 +62,7 @@ void setup() {
 
 You can find more usage examples in the [examples directory](https://github.com/jaedsonpys/bmi160-definitive-library/tree/master/examples) on GitHub. Fell free to add new examples files there!
 
-```cpp
+```c++
 #include <Arduino.h>
 #include <BMI160Definitive.h>
 #include <SPI.h>
